@@ -15,15 +15,16 @@ module.exports = class Ingredient {
     this.description = description || '';
     this.quantity = quantity || {};
     this.caloriesPer100Grams = caloriesPer100Grams;
-    this.categories = categories;
+    this.categories = categories || [];
     this.alternatives = alternatives || [];
   }
 
   amendQuantity(amountUsed) {
     const measurement = Object.keys(amountUsed)[0];
-    const newQuantity = measurement
-      ? this.quantity[measurement] - amountUsed[measurement]
-      : 0;
-      
+    if (measurement) {
+      const newQuantity = this.quantity[measurement] - amountUsed[measurement];
+      this.quantity[measurement] = newQuantity > 0 ? newQuantity : 0;
+    }
+    return this;
   }
 };

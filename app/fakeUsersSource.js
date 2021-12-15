@@ -1,60 +1,27 @@
 const { v4: uuidv4 } = require('uuid');
-const Ingredient = require('./ingredient');
+const User = require('../app/user');
 
-module.exports = class FakeUsersSource {
-  constructor(usersSource) {
-    this.usersSource = usersSource;
+module.exports = class UsersSource {
+  constructor() {
+    this.usersSource = [];
   }
 
-  async get(id) {
-    const user = await this.usersSource.find((user) => user.id === id);
+  getUser(id) {
+    const user = this.usersSource.find((user) => user.id === id);
     if (user) {
       return user;
     } else {
-      return null;
+      return this.addUser();
     }
   }
 
-  async addUser() {
+  addUser() {
     const newId = uuidv4();
-    this.usersSource.push({
-      id: newId,
-      pantry: [],
-    });
-    return this.get(newId);
+    this.usersSource.push(new User(newId));
+    return this.getUser(newId);
   }
 
-  async addIngredient(id, ingredient) {
-    const user = await this.get(id);
-    await user.pantry.push(new Ingredient(ingredient));
-    return ingredient;
+  withUser(user) {
+    this.usersSource.push(user)
   }
-
-  async amendIngredient(id, ingredient, amountUsed) {
-    const user = await this.get(id);
-    const pantryIngredient = await user.pantry.find(
-      (i) => i.id === ingredient.id
-    );
-
-    const measurement = Object.keys(amountUsed)[0];
-    const newQuantity = measurement
-      ? pantryIngredient.quantity[measurement] - amountUsed[measurement]
-      : 0;
-
-    if (newQuantity <= 0) {
-      this.removeIngredient(user, pantryIngredient);
-      return;
-    }
-    pantryIngredient.quantity[measurement] = newQuantity;
-    return pantryIngredient;
-  }
-
-  removeIngredient(user, ingredient) {
-    user.pantry.splice(user.pantry.indexOf(ingredient), 1);
-  }
-
-  withIngredient(user, ingredient) {
-    // use Ingredient class
-  }
-
 };
