@@ -18,7 +18,7 @@ module.exports = class RecipesSource {
   }
 
   getRecipes() {
-    // load in recipes
+    //todo: load in recipes
   }
 
   getRecipeByIngredients(pantry) {
@@ -27,11 +27,20 @@ module.exports = class RecipesSource {
 
     this.recipes.forEach((recipe) => {
       let matchingIngredients = 0;
+      const missingIngredients = [];
       recipe.ingredientsSource.ingredients.forEach((ingredient) => {
+        const measure = Object.keys(ingredient.quantity)[0];
         if (
-          pantry.ingredients.find((pantryIngredient) => pantryIngredient.name === ingredient.name)
+          pantry.ingredients.find((pantryIngredient) => {
+            return (
+              pantryIngredient.name === ingredient.name &&
+              pantryIngredient.quantity[measure] >= ingredient.quantity[measure]
+            );
+          })
         ) {
           matchingIngredients += 1;
+        } else {
+          missingIngredients.push(ingredient);
         }
       });
 
@@ -40,12 +49,6 @@ module.exports = class RecipesSource {
       if (score === 1) {
         matchingRecipes.push(recipe);
       } else if (score > 0) {
-        const missingIngredients = recipe.ingredientsSource.ingredients.filter(
-          (ingredient) =>
-            !pantry.ingredients.find(
-              (pantryIngredient) => pantryIngredient.name === ingredient.name
-            )
-        );
         partialRecipes.push({ recipe, missingIngredients });
       }
     });
