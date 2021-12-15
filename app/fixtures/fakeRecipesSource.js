@@ -17,31 +17,36 @@ module.exports = class RecipesSource {
     );
   }
 
+  getRecipes() {
+    // load in recipes
+  }
+
   getRecipeByIngredients(pantry) {
-       const pantryIngredients = pantry.ingredients.map(
-      (ingredient) => ingredient.name
-    );
     const matchingRecipes = [];
     const partialRecipes = [];
 
     this.recipes.forEach((recipe) => {
-      const recipeIngredients = recipe.ingredients.ingredients.map(
-        (ingredient) => ingredient.name
-      );
       let matchingIngredients = 0;
-      recipeIngredients.forEach((ingredient) => {
-        if (pantryIngredients.includes(ingredient)) {
+      recipe.ingredientsSource.ingredients.forEach((ingredient) => {
+        if (
+          pantry.ingredients.find((pantryIngredient) => pantryIngredient.name === ingredient.name)
+        ) {
           matchingIngredients += 1;
         }
       });
 
-      const score = matchingIngredients / recipeIngredients.length;
+      const score = matchingIngredients / recipe.ingredientsSource.ingredients.length;
 
       if (score === 1) {
         matchingRecipes.push(recipe);
       } else if (score > 0) {
-        const missingIngredients = recipeIngredients.filter(ingredient => !pantryIngredients.includes(ingredient))
-        partialRecipes.push({recipe, missingIngredients});
+        const missingIngredients = recipe.ingredientsSource.ingredients.filter(
+          (ingredient) =>
+            !pantry.ingredients.find(
+              (pantryIngredient) => pantryIngredient.name === ingredient.name
+            )
+        );
+        partialRecipes.push({ recipe, missingIngredients });
       }
     });
 

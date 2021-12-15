@@ -5,7 +5,7 @@ module.exports = class Recipe {
   constructor({ title, ingredients, method, time, imageUrl }) {
     this.id = uuidv4();
     this.title = title || '';
-    this.ingredients = this.addIngredients(ingredients);
+    this.ingredientsSource = this.addIngredients(ingredients);
     this.method = method || '';
     this.time = time || { minutes: 0 };
     this.imageUrl = imageUrl || '';

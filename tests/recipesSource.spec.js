@@ -112,7 +112,13 @@ describe('Recipes Source', () => {
     const user = await usersSource.getUser('user-uuid1234');
     const foundRecipes = recipesSource.getRecipeByIngredients(user.pantry);
     expect(foundRecipes.matchingRecipes).to.have.lengthOf(1);
-    console.log(foundRecipes.partialRecipes);
+  });
+
+  it('should find partially matching recipes', async () => {
+    const user = await usersSource.getUser('user-uuid1234');
+    const foundRecipes = recipesSource.getRecipeByIngredients(user.pantry);
     expect(foundRecipes.partialRecipes).to.have.lengthOf(2);
+    expect(foundRecipes.partialRecipes[0]).to.haveOwnPropertyDescriptor('missingIngredients');
+    expect(foundRecipes.partialRecipes[0].missingIngredients).to.have.lengthOf(1);
   });
 });
