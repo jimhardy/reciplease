@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 const User = require('../app/user');
-const UsersSource = require('../app/fakeUsersSource');
+const UsersSource = require('../app/fixtures/fakeUsersSource');
 
 const usersSource = new UsersSource();
 

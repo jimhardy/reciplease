@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-const User = require('../app/user');
+const User = require('../user');
 
 module.exports = class UsersSource {
   constructor() {

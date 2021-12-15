@@ -1,4 +1,4 @@
-const IngredientsSource = require('../app/fakeIngredientsSource');
+const IngredientsSource = require('./fixtures/fakeIngredientsSource');
 
 module.exports = class User {
   constructor(id) {

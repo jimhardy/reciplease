@@ -1,4 +1,4 @@
-const Ingredient = require('./ingredient');
+const Ingredient = require('../ingredient');
 
 module.exports = class IngredientsSource {
   constructor() {
