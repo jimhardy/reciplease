@@ -30,6 +30,7 @@ module.exports = class RecipesSource {
       const missingIngredients = [];
       recipe.ingredientsSource.ingredients.forEach((ingredient) => {
         const measure = Object.keys(ingredient.quantity)[0];
+        // invert this and get implied matching ingredients from missing?
         if (
           pantry.ingredients.find((pantryIngredient) => {
             return (
