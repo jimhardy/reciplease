@@ -1,15 +1,15 @@
 const { v4: uuidv4 } = require('uuid');
-const User = require('../user');
+const User = require('../../user');
 
 // todo: add irl implementation with clouddb
 
-module.exports = class UsersSource {
+module.exports = class UserSource {
   constructor() {
-    this.usersSource = [];
+    this.userSource = [];
   }
 
   getUser(id) {
-    const user = this.usersSource.find((user) => user.id === id);
+    const user = this.userSource.find((user) => user.id === id);
     if (user) {
       return user;
     } else {
@@ -19,11 +19,11 @@ module.exports = class UsersSource {
 
   addUser() {
     const newId = uuidv4();
-    this.usersSource.push(new User(newId));
+    this.userSource.push(new User(newId));
     return this.getUser(newId);
   }
 
   withUser(user) {
-    this.usersSource.push(user)
+    this.userSource.push(user)
   }
 };

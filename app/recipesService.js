@@ -1,8 +1,11 @@
-const Recipe = require('../recipe');
+const Recipe = require('./recipe');
 
-module.exports = class RecipesSource {
-  constructor() {
+module.exports = class RecipesService {
+  constructor(recipeSource) {
+    this.recipeSource = recipeSource;
     this.recipes = [];
+    this.healthy = false;
+    this.getRecipes();
   }
 
   addRecipe(recipe) {
@@ -18,7 +21,9 @@ module.exports = class RecipesSource {
   }
 
   getRecipes() {
-    //todo: load in recipes
+    this.recipeSource.getRecipes().then((recipes) => {
+      recipes.forEach((recipe) => this.addRecipe(recipe)).then(() => (this.healthy = true));
+    });
   }
 
   getRecipeByIngredients(pantry) {

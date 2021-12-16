@@ -1,0 +1,42 @@
+{
+  "recipes": [
+    {
+      "title": "pasta and butter",
+      "ingredients": [
+        {
+          "name": "pasta",
+          "quantity": {
+            "grams": 500
+          }
+        },
+        {
+          "name": "butter",
+          "quantity": {
+            "grams": 100
+          }
+        }
+      ],
+      "method": "cook pasta, add butter",
+      "time": { "minutes": 10 }
+    },
+    {
+      "title": "butter on brown toast",
+      "ingredients": [
+        {
+          "name": "brown bread",
+          "quantity": {
+            "slices": 2
+          }
+        },
+        {
+          "name": "butter",
+          "quantity": {
+            "grams": 20
+          }
+        }
+      ],
+      "method": "bread in toaster, butter bread",
+      "time": { "minutes": 5 }
+    }
+  ]
+}

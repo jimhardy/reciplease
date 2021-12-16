@@ -1,13 +1,18 @@
 const { expect } = require('chai');
 const { v4: uuidv4 } = require('uuid');
 
-const RecipesSource = require('../app/fixtures/fakeRecipesSource');
+const RecipesService = require('../app/recipesService');
 
 const User = require('../app/user');
-const UsersSource = require('../app/fixtures/fakeUsersSource');
-const recipesSource = new RecipesSource();
+const UsersService = require('../app/usersService');
+const UserSource = require('../app/fixtures/fakes/fakeUserSource');
 
-const usersSource = new UsersSource();
+const RecipeSource = require('../app/fixtures/fakes/fakeRecipeSource');
+
+const fakeRecipeSource = new RecipeSource();
+const recipesService = new RecipesService(fakeRecipeSource);
+const userSource = new UserSource();
+const usersService = new UsersService(userSource);
 
 before(() => {
   const user = new User('user-uuid1234');
@@ -40,52 +45,12 @@ before(() => {
     },
   });
 
-  recipesSource.addRecipe({
-    title: 'pasta and butter',
-    ingredients: [
-      {
-        name: 'pasta',
-        quantity: {
-          grams: 500,
-        },
-      },
-      {
-        name: 'butter',
-        quantity: {
-          grams: 100,
-        },
-      },
-    ],
-    method: 'cook pasta, add butter',
-    time: { minutes: 5 },
-  });
-
-  recipesSource.addRecipe({
-    title: 'butter on brown toast',
-    ingredients: [
-      {
-        name: 'brown bread',
-        quantity: {
-          slices: 2,
-        },
-      },
-      {
-        name: 'butter',
-        quantity: {
-          grams: 20,
-        },
-      },
-    ],
-    method: 'bread in toaster, butter bread',
-    time: { minutes: 5 },
-  });
-
-  usersSource.withUser(user);
+  userSource.withUser(user);
 });
 
-describe('Recipes Source', () => {
+describe('Recipes Service', () => {
   it('should be add a recipe to the recipe source', () => {
-    recipesSource.addRecipe({
+    recipesService.addRecipe({
       title: 'butter on toast',
       ingredients: [
         {
@@ -105,18 +70,18 @@ describe('Recipes Source', () => {
       time: { minutes: 5 },
     });
 
-    expect(recipesSource.recipes).to.have.lengthOf(3);
+    expect(recipesService.recipes).to.have.lengthOf(3);
   });
 
   it('should find matching recipes', async () => {
-    const user = await usersSource.getUser('user-uuid1234');
-    const foundRecipes = recipesSource.getRecipeByIngredients(user.pantry);
+    const user = await usersService.getUser('user-uuid1234');
+    const foundRecipes = recipesService.getRecipeByIngredients(user.pantry);
     expect(foundRecipes.matchingRecipes).to.have.lengthOf(1);
   });
 
   it('should find partially matching recipes', async () => {
-    const user = await usersSource.getUser('user-uuid1234');
-    const foundRecipes = recipesSource.getRecipeByIngredients(user.pantry);
+    const user = await usersService.getUser('user-uuid1234');
+    const foundRecipes = recipesService.getRecipeByIngredients(user.pantry);
     expect(foundRecipes.partialRecipes).to.have.lengthOf(2);
     expect(foundRecipes.partialRecipes[0]).to.haveOwnPropertyDescriptor('missingIngredients');
     expect(foundRecipes.partialRecipes[0].missingIngredients).to.have.lengthOf(1);

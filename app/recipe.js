@@ -1,4 +1,4 @@
-const IngredientsSource = require('./fixtures/fakeIngredientsSource');
+const IngredientsSource = require('./fixtures/fakes/fakeIngredientsSource');
 const { v4: uuidv4 } = require('uuid');
 
 module.exports = class Recipe {
