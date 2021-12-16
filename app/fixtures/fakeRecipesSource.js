@@ -26,26 +26,23 @@ module.exports = class RecipesSource {
     const partialRecipes = [];
 
     this.recipes.forEach((recipe) => {
-      let matchingIngredients = 0;
       const missingIngredients = [];
       recipe.ingredientsSource.ingredients.forEach((ingredient) => {
         const measure = Object.keys(ingredient.quantity)[0];
-        // invert this and get implied matching ingredients from missing?
         if (
-          pantry.ingredients.find((pantryIngredient) => {
-            return (
+          !pantry.ingredients.find(
+            (pantryIngredient) =>
               pantryIngredient.name === ingredient.name &&
               pantryIngredient.quantity[measure] >= ingredient.quantity[measure]
-            );
-          })
+          )
         ) {
-          matchingIngredients += 1;
-        } else {
           missingIngredients.push(ingredient);
         }
       });
 
-      const score = matchingIngredients / recipe.ingredientsSource.ingredients.length;
+      const score =
+        (recipe.ingredientsSource.ingredients.length - missingIngredients.length) /
+        recipe.ingredientsSource.ingredients.length;
 
       if (score === 1) {
         matchingRecipes.push(recipe);
