@@ -4,11 +4,15 @@ const Recipe = require('../../recipe');
 module.exports = class RecipeSource {
   constructor() {
     this.recipes = [];
-    this.getAllRecipes();
+    this.initializeRecipes();
+  }
+
+  initializeRecipes() {
+    recipeStore.recipes.forEach((recipe) => this.addRecipe(recipe));
   }
 
   getAllRecipes() {
-    recipeStore.recipes.forEach((recipe) => this.recipes.push(new Recipe(recipe)));
+    return this.recipes;
   }
 
   addRecipe(recipe) {
@@ -21,11 +25,9 @@ module.exports = class RecipeSource {
         imageUrl: recipe.imageUrl,
       })
     );
-    return `recipe added: ${recipe.title}`;
   }
 
   getRecipeByIngredients(pantry) {
-    try {
       const matchingRecipes = [];
       const partialRecipes = [];
   
@@ -55,8 +57,5 @@ module.exports = class RecipeSource {
         }
       });
       return { matchingRecipes, partialRecipes };
-    } catch (error) {
-      throw new Error(error)
-    }
   }
 };
