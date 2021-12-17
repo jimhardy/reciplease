@@ -70,7 +70,7 @@ describe('Recipes Service', () => {
       time: { minutes: 5 },
     });
 
-    expect(recipesService.recipes).to.have.lengthOf(3);
+    expect(fakeRecipeSource.recipes).to.have.lengthOf(3);
   });
 
   it('should find matching recipes', async () => {
