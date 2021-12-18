@@ -1,8 +1,18 @@
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
 
+import {userService, recipeService} from '../app/index'
+
 export default function Home(props) {
   // the props here is from getStaticProps
+
+  const handleClick = async () => {
+    const recipes = recipeService.getAllRecipes();
+    console.log(recipes);
+  }
+
+
+
   return (
     <div className={styles.container}>
       <Head>
@@ -13,6 +23,7 @@ export default function Home(props) {
       <main className={styles.main}>
         <h1 className={styles.title}>Reciplease</h1>
         <p>Add ingredients</p>
+        <button onClick={handleClick}>Get Recipes</button>
       </main>
     </div>
   );
@@ -42,9 +53,10 @@ export default function Home(props) {
 export async function getStaticProps() {
   // runs before component is rendered
   // executed at build, not client side
+ 
   return {
     props: {
-      test: 'i am a prop that is generated at build time',
+      test: 'xxx'
     },
     revalidate: 10, // regenerates page on server every 10 seconds
   };

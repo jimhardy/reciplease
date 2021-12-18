@@ -1,6 +1,8 @@
-module.exports = class UsersService {
+module.exports = class UserService {
   constructor(userSource) {
     this.userSource = userSource;
+    this.healthy = true;
+    console.log('UserService initialized');
   }
 
   getUser(id) {

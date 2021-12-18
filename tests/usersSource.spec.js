@@ -1,11 +1,11 @@
 const { expect } = require('chai');
 const User = require('../app/user');
-const UsersService = require('../app/usersService');
+const UserService = require('../app/userService');
 const UserSource = require('../app/fixtures/fakes/fakeUserSource');
 
 const userSource = new UserSource();
 
-const usersService = new UsersService(userSource);
+const userService = new UserService(userSource);
 
 before(() => {
   const user = new User('user-uuid1234');
@@ -29,14 +29,14 @@ before(() => {
 
 describe('Users Source', () => {
   it('should find a user given an id', async () => {
-    const user = await usersService.getUser('user-uuid1234');
+    const user = await userService.getUser('user-uuid1234');
     expect(user).to.not.be.undefined;
     expect(user.id).to.equal('user-uuid1234');
     expect(user.pantry.ingredients).to.be.a('array');
   });
 
   it('should create a user if none is found', async () => {
-    const user = await usersService.getUser('not found');
+    const user = await userService.getUser('not found');
     expect(user).to.not.be.undefined;
     expect(user.pantry.ingredients).to.have.a.lengthOf(0);
   });
@@ -44,13 +44,13 @@ describe('Users Source', () => {
   describe('User Ingredients', () => {
 
     it('should get all ingredients for a user' , async () => {
-      const user = await usersService.getUser('user-uuid1234');
+      const user = await userService.getUser('user-uuid1234');
       const ingredients = user.pantry.getAllIngredients();
       expect(ingredients).to.have.lengthOf(2);
     })
 
     it('should add an ingredient to a users pantry', async () => {
-      const user = await usersService.getUser('user-uuid1234');
+      const user = await userService.getUser('user-uuid1234');
       await user.addIngredient({
         id: 'uuid5',
         name: 'cayenne pepper',
@@ -78,7 +78,7 @@ describe('Users Source', () => {
     });
 
     it('should amend the quantity of an ingredient', () => {
-      const user = usersService.getUser('user-uuid1234');
+      const user = userService.getUser('user-uuid1234');
       user.amendIngredient(
         {
           id: 'uuid1',
@@ -92,7 +92,7 @@ describe('Users Source', () => {
     });
 
     it('should remove the ingredient if it is all used up', async () => {
-      const user = usersService.getUser('user-uuid1234');
+      const user = userService.getUser('user-uuid1234');
       await user.amendIngredient(
         {
           id: 'uuid2',

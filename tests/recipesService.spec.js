@@ -1,18 +1,18 @@
 const { expect } = require('chai');
 const { v4: uuidv4 } = require('uuid');
 
-const RecipesService = require('../app/recipesService');
 
 const User = require('../app/user');
-const UsersService = require('../app/usersService');
+const UserService = require('../app/userService');
 const UserSource = require('../app/fixtures/fakes/fakeUserSource');
-
 const RecipeSource = require('../app/fixtures/fakes/fakeRecipeSource');
+const RecipeService = require('../app/recipeService');
+
 
 const fakeRecipeSource = new RecipeSource();
-const recipesService = new RecipesService(fakeRecipeSource);
+const recipeService = new RecipeService(fakeRecipeSource);
 const userSource = new UserSource();
-const usersService = new UsersService(userSource);
+const userService = new UserService(userSource);
 
 before(() => {
   const user = new User('user-uuid1234');
@@ -50,7 +50,7 @@ before(() => {
 
 describe('Recipes Service', () => {
   it('should be add a recipe to the recipe source', () => {
-    recipesService.addRecipe({
+    recipeService.addRecipe({
       title: 'butter on toast',
       ingredients: [
         {
@@ -74,14 +74,14 @@ describe('Recipes Service', () => {
   });
 
   it('should find matching recipes', async () => {
-    const user = await usersService.getUser('user-uuid1234');
-    const foundRecipes = recipesService.getRecipeByIngredients(user.pantry);
+    const user = await userService.getUser('user-uuid1234');
+    const foundRecipes = recipeService.getRecipeByIngredients(user.pantry);
     expect(foundRecipes.matchingRecipes).to.have.lengthOf(1);
   });
 
   it('should find partially matching recipes', async () => {
-    const user = await usersService.getUser('user-uuid1234');
-    const foundRecipes = recipesService.getRecipeByIngredients(user.pantry);
+    const user = await userService.getUser('user-uuid1234');
+    const foundRecipes = recipeService.getRecipeByIngredients(user.pantry);
     expect(foundRecipes.partialRecipes).to.have.lengthOf(2);
     expect(foundRecipes.partialRecipes[0]).to.haveOwnPropertyDescriptor('missingIngredients');
     expect(foundRecipes.partialRecipes[0].missingIngredients).to.have.lengthOf(1);
