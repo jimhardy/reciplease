@@ -1,10 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-// import { userService, recipeService } from '../app/index';
+import { userService, recipeService } from '../../app/index';
 
 export default function handler(req, res) {
-  if (req.method === 'GET') {
-    // const recipes = recipeService.getAllRecipes();
-    res.status(200).json({ x:1 });
+  console.log(recipeService.getAllRecipes());
+  if (req.method === 'POST') {
+    const data = req.data;
+    res.status(200).json({ name: 'John Doe' });
   }
 }
 

@@ -6,7 +6,13 @@ module.exports = class RecipeService {
   }
 
   addRecipe(recipe) {
-    this.recipeSource.addRecipe(recipe);
+    console.log('inside addRecipe');
+    return this.recipeSource.addRecipe(recipe).then((res) => {
+      if (res.error) {
+        throw new Error(`failed to add recipe ${res.error}`);
+      }
+      return Promise.resolve(recipe);
+    });
   }
 
   getAllRecipes() {

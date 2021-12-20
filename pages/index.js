@@ -1,17 +1,28 @@
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
 
-import {userService, recipeService} from '../app/index'
+import { userService, recipeService } from '../app/index';
 
 export default function Home(props) {
   // the props here is from getStaticProps
 
-  const handleClick = async () => {
-    const recipes = recipeService.getAllRecipes();
-    console.log(recipes);
-  }
+  const handleAddRecipe = async () => {
+    try {
+      const res = await fetch('/api/add-recipe');
+      console.log(await res.json());
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-
+  const handleGetAllRecipes = async () => {
+    try {
+      const res = await fetch('/api/all-recipes');
+      console.log(await res.json());
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -23,7 +34,8 @@ export default function Home(props) {
       <main className={styles.main}>
         <h1 className={styles.title}>Reciplease</h1>
         <p>Add ingredients</p>
-        <button onClick={handleClick}>Get Recipes</button>
+        <button onClick={handleAddRecipe}>Add Recipe</button>
+        <button onClick={handleGetAllRecipes}>Get All Recipes</button>
       </main>
     </div>
   );
@@ -50,17 +62,17 @@ export default function Home(props) {
 //   };
 // }
 
-export async function getStaticProps() {
-  // runs before component is rendered
-  // executed at build, not client side
- 
-  return {
-    props: {
-      test: 'xxx'
-    },
-    revalidate: 10, // regenerates page on server every 10 seconds
-  };
-}
+// export async function getStaticProps() {
+//   // runs before component is rendered
+//   // executed at build, not client side
+
+//   return {
+//     props: {
+//       test: 'xxx',
+//     },
+//     revalidate: 10, // regenerates page on server every 10 seconds
+//   };
+// }
 
 // runs for every request => slower => only use if you need req, or if props change all the time
 // export async function getServerSideProps(context) { // context is optional
