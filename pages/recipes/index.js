@@ -4,7 +4,7 @@ export default function Recipes() {
   const router = useRouter();
 
   const showRecipeHandler = () => {
-    router.push('/recipes/pasta')
+    router.push('/recipes/pasta',)
   }
 
   return (
