@@ -12,16 +12,14 @@ before(() => {
   user.addIngredient({
     id: 'uuid1',
     name: 'salt',
-    quantity: {
-      grams: 1000,
-    },
+    amount: 1000,
+    measure: 'grams',
   });
   user.addIngredient({
     id: 'uuid2',
     name: 'pepper',
-    quantity: {
-      grams: 200,
-    },
+    amount: 200,
+    measure: 'grams',
   });
 
   userSource.withUser(user);
@@ -42,22 +40,20 @@ describe('Users Source', () => {
   });
 
   describe('User Ingredients', () => {
-
-    it('should get all ingredients for a user' , async () => {
+    it('should get all ingredients for a user', async () => {
       const user = await userService.getUser('user-uuid1234');
       const ingredients = user.pantry.getAllIngredients();
       expect(ingredients).to.have.lengthOf(2);
-    })
+    });
 
     it('should add an ingredient to a users pantry', async () => {
       const user = await userService.getUser('user-uuid1234');
       await user.addIngredient({
         id: 'uuid5',
         name: 'cayenne pepper',
-        quantity: {
-          grams: 50,
-        },
-        caloriesPer100Grams: 0,
+        amount: 50,
+        measure: 'grams',
+        caloriesPerServing: 0,
         categories: ['seasoning'],
       });
       expect(user.pantry.ingredients).to.deep.include.members([
@@ -65,10 +61,9 @@ describe('Users Source', () => {
           id: 'uuid5',
           name: 'cayenne pepper',
           description: '',
-          quantity: {
-            grams: 50,
-          },
-          caloriesPer100Grams: 0,
+          amount: 50,
+          measure: 'grams',
+          caloriesPerServing: 0,
           categories: ['seasoning'],
           alternatives: [],
         },
@@ -84,11 +79,12 @@ describe('Users Source', () => {
           id: 'uuid1',
           name: 'salt',
         },
-        { grams: 10 }
+        { amount: 10, measure: 'grams' }
       );
 
       const ingredient = user.pantry.getIngredient('salt');
-      expect(ingredient.quantity.grams).to.equal(990);
+      expect(ingredient.amount).to.equal(990);
+      expect(ingredient.measure).to.equal('grams');
     });
 
     it('should remove the ingredient if it is all used up', async () => {
@@ -98,7 +94,7 @@ describe('Users Source', () => {
           id: 'uuid2',
           name: 'pepper',
         },
-        { grams: 200 }
+        { amount: 200, measure: 'grams' }
       );
       const ingredient = user.pantry.getIngredient('pepper');
       expect(ingredient).to.be.undefined;

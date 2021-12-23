@@ -35,12 +35,12 @@ module.exports = class RecipeSource {
     this.recipes.forEach((recipe) => {
       const missingIngredients = [];
       recipe.ingredientsSource.ingredients.forEach((ingredient) => {
-        const measure = Object.keys(ingredient.quantity)[0];
         if (
           !pantry.ingredients.find(
             (pantryIngredient) =>
               pantryIngredient.name === ingredient.name &&
-              pantryIngredient.quantity[measure] >= ingredient.quantity[measure]
+              pantryIngredient.measure === ingredient.measure &&
+              pantryIngredient.amount >= ingredient.amount
           )
         ) {
           missingIngredients.push(ingredient);

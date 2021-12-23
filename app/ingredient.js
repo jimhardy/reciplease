@@ -5,25 +5,28 @@ module.exports = class Ingredient {
     id,
     name,
     description,
-    quantity,
-    caloriesPer100Grams,
+    amount,
+    measure,
+    caloriesPerServing,
     categories,
     alternatives,
   }) {
     this.id = id || uuidv4();
     this.name = name || '';
     this.description = description || '';
-    this.quantity = quantity || {};
-    this.caloriesPer100Grams = caloriesPer100Grams;
+    this.amount = amount || 0;
+    this.measure = measure || '';
+    this.caloriesPerServing = caloriesPerServing;
     this.categories = categories || [];
     this.alternatives = alternatives || [];
   }
 
-  amendQuantity(amountUsed) {
-    const measurement = Object.keys(amountUsed)[0];
-    if (measurement) {
-      const newQuantity = this.quantity[measurement] - amountUsed[measurement];
-      this.quantity[measurement] = newQuantity > 0 ? newQuantity : 0;
+  amendQuantity({amount, measure}) {
+    if (measure === this.measure) {
+      const newQuantity = this.amount - amount;
+      this.amount = newQuantity > 0 ? newQuantity : 0;
+    } else {
+      throw new Error('measures are not the same');
     }
     return this;
   }

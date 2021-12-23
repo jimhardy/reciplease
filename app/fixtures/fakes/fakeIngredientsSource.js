@@ -21,10 +21,9 @@ module.exports = class IngredientsSource {
 
   amendIngredient(ingredientToAmend, amountUsed) {
     const ingredient = this.getIngredient(ingredientToAmend.name);
-    const measurement = Object.keys(amountUsed)[0];
-    ingredient.amendQuantity(amountUsed);
+    ingredient.amendQuantity({ amount: amountUsed.amount, measure: amountUsed.measure });
 
-    if (ingredient.quantity[measurement] <= 0) {
+    if (ingredient.amount <= 0) {
       this.removeIngredient(ingredient);
     }
     return this;

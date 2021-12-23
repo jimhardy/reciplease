@@ -8,15 +8,13 @@ export default function handler(req, res) {
         ingredients: [
           {
             name: 'bread',
-            quantity: {
-              slices: 2,
-            },
+            amount: 2,
+            measure: 'slices',
           },
           {
             name: 'butter',
-            quantity: {
-              grams: 20,
-            },
+            amount: '20',
+            measure: 'grams',
           },
         ],
         method: 'bread in toaster, butter bread',

@@ -5,15 +5,13 @@
       "ingredients": [
         {
           "name": "pasta",
-          "quantity": {
-            "grams": 500
-          }
+          "amount": 500,
+          "measure": "grams"
         },
         {
           "name": "butter",
-          "quantity": {
-            "grams": 100
-          }
+          "amount": 100,
+          "measure": "grams"
         }
       ],
       "method": "cook pasta, add butter",
@@ -24,15 +22,13 @@
       "ingredients": [
         {
           "name": "brown bread",
-          "quantity": {
-            "slices": 2
-          }
+          "amount": 2,
+          "measure": "slices"
         },
         {
           "name": "butter",
-          "quantity": {
-            "grams": 20
-          }
+          "amount": 20,
+          "measure": "grams"
         }
       ],
       "method": "bread in toaster, butter bread",

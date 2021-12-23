@@ -1,13 +1,11 @@
 const { expect } = require('chai');
 const { v4: uuidv4 } = require('uuid');
 
-
 const User = require('../app/user');
 const UserService = require('../app/userService');
 const UserSource = require('../app/fixtures/fakes/fakeUserSource');
 const RecipeSource = require('../app/fixtures/fakes/fakeRecipeSource');
 const RecipeService = require('../app/recipeService');
-
 
 const fakeRecipeSource = new RecipeSource();
 const recipeService = new RecipeService(fakeRecipeSource);
@@ -19,30 +17,26 @@ before(() => {
   user.addIngredient({
     id: uuidv4(),
     name: 'salt',
-    quantity: {
-      grams: 1000,
-    },
+    amount: 1000,
+    measure: 'grams',
   });
   user.addIngredient({
     id: uuidv4(),
     name: 'pepper',
-    quantity: {
-      grams: 200,
-    },
+    amount: 200,
+    measure: 'grams',
   });
   user.addIngredient({
     id: uuidv4(),
     name: 'bread',
-    quantity: {
-      slices: 10,
-    },
+    amount: 10,
+    measure: 'slices',
   });
   user.addIngredient({
     id: uuidv4(),
     name: 'butter',
-    quantity: {
-      grams: 250,
-    },
+    amount: 250,
+    measure: 'grams',
   });
 
   userSource.withUser(user);
@@ -55,15 +49,13 @@ describe('Recipes Service', () => {
       ingredients: [
         {
           name: 'bread',
-          quantity: {
-            slices: 2,
-          },
+          amount: 2,
+          measure: 'slices',
         },
         {
           name: 'butter',
-          quantity: {
-            grams: 20,
-          },
+          amount: 20,
+          measure: 'grams',
         },
       ],
       method: 'bread in toaster, butter bread',
