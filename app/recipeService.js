@@ -5,14 +5,9 @@ module.exports = class RecipeService {
     console.log('RecipeService initialized');
   }
 
-  addRecipe(recipe) {
-    console.log('inside addRecipe');
-    return this.recipeSource.addRecipe(recipe).then((res) => {
-      if (res.error) {
-        throw new Error(`failed to add recipe ${res.error}`);
-      }
-      return Promise.resolve(recipe);
-    });
+  async addRecipe(recipe) {
+    const response = await this.recipeSource.addRecipe(recipe);
+    return Promise.resolve(response);
   }
 
   getAllRecipes() {

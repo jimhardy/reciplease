@@ -23,7 +23,6 @@ module.exports = class RecipeSource {
       time: recipe.time,
       imageUrl: recipe.imageUrl,
     });
-
     this.recipes.push(newRecipe);
     return Promise.resolve(newRecipe);
   }
