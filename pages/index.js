@@ -1,25 +1,17 @@
+import { useState } from 'react';
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
+import { TextField, Typography, Button, IconButton, Box, List, ListItem } from '@mui/material';
+import RecipeList from '../components/RecipeList';
+import SearchBar from '../components/searchBar';
+import config from 'config';
+export default function Home({ user }) {
+  const [recipes, setRecipes] = useState([]);
 
-import { userService, recipeService } from '../app/index';
-
-export default function Home(props) {
-  // the props here is from getStaticProps
-
-  const handleAddRecipe = async () => {
-    try {
-      const res = await fetch('/api/add-recipe');
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleGetAllRecipes = async () => {
-    try {
-      const res = await fetch('/api/all-recipes');
-    } catch (error) {
-      console.log(error);
-    }
+  const handleSearch = async () => {
+    const res = await fetch(`/api/search-recipes?userId=${user.id}`, {
+      method: 'GET',
+    });
   };
 
   return (
@@ -30,13 +22,36 @@ export default function Home(props) {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>Reciplease</h1>
-        <p>Add ingredients</p>
-        <button onClick={handleAddRecipe}>Add Recipe</button>
-        <button onClick={handleGetAllRecipes}>Get All Recipes</button>
+        <Typography variant='h3'>Reciplease</Typography>
+        <Typography variant='h7'>Your ingredients:</Typography>
+        <SearchBar />
+        <Button onClick={handleSearch} variant='outlined'>
+          Search
+        </Button>
+        {recipes.length ? <RecipeList recipes={recipes} /> : <Typography variant='h7'>click search</Typography>}
       </main>
     </div>
   );
+}
+
+export async function getStaticProps() {
+  // const userId = window.localStorage.getItem('recipleaseUserId')
+  const userId = 'user-uuid1234'; // for testing
+  const res = await fetch(`${config.get('host')}/api/get-user?userId=${userId}`, {
+    method: 'GET',
+  });
+  const data = await res.json();
+  if (!data) {
+    return { notfound: true };
+  }
+  console.log('here');
+  console.log(data.user);
+  return {
+    props: {
+      user: data.user,
+    },
+    revalidate: 10,
+  };
 }
 
 // export async function getStaticPaths() {
@@ -57,18 +72,6 @@ export default function Home(props) {
 //         },
 //       },
 //     ],
-//   };
-// }
-
-// export async function getStaticProps() {
-//   // runs before component is rendered
-//   // executed at build, not client side
-
-//   return {
-//     props: {
-//       test: 'xxx',
-//     },
-//     revalidate: 10, // regenerates page on server every 10 seconds
 //   };
 // }
 

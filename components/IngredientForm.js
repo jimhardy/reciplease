@@ -74,16 +74,7 @@ export default function IngredientsForm({ submitIngredients, initialIngredients 
           >
             {ingredients.map((inputField, index) => (
               <div key={inputField.id}>
-                <TextField
-                  name='name'
-                  label='Ingredient'
-                  variant='filled'
-                  value={inputField.name}
-                  InputLabelProps={{
-                    shrink: !!inputField.name,
-                  }}
-                  onChange={(event) => handleChangeIngredients(inputField.id, event)}
-                />
+                
                 <TextField
                   name='amount'
                   label='Amount'
