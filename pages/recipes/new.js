@@ -1,16 +1,11 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import {
-  TextField,
-  Typography,
-  FormControl,
-  IconButton,
-  Button,
-  Box
-} from '@mui/material';
+import { TextField, Typography, FormControl, IconButton, Button, Box } from '@mui/material';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
+import IngredientsForm from '../../components/IngredientForm';
+import Ingredient from '../../app/ingredient';
 import { v4 as uuidv4 } from 'uuid';
 
 export default function Recipes() {
@@ -21,8 +16,6 @@ export default function Recipes() {
     method: '',
     time: '',
   });
-
-  const [ingredients, setIngredients] = useState([{ id: uuidv4(), ingredientName: '', amount: '', measure: '' }]);
 
   const handleSubmit = async (e) => {
     try {
@@ -52,29 +45,6 @@ export default function Recipes() {
     setRecipe({ ...recipe, [e.target.id]: e.target.value });
   };
 
-  const handleChangeIngredients = (id, event) => {
-    const newInputFields = ingredients.map((i) => {
-      if (id === i.id) {
-        i[event.target.name] = event.target.value;
-      }
-      return i;
-    });
-    setIngredients(newInputFields);
-  };
-
-  const handleAddIngredient = () => {
-    setIngredients([...ingredients, { id: uuidv4(), ingredientName: '', amount: '', measure: '' }]);
-  };
-
-  const handleRemoveIngredient = (id) => {
-    const values = [...ingredients];
-    values.splice(
-      values.findIndex((value) => value.id === id),
-      1
-    );
-    setIngredients(values);
-  };
-
   return (
     <Box
       component='form'
@@ -96,39 +66,7 @@ export default function Recipes() {
             noValidate
             autoComplete='off'
           >
-            {ingredients.map((inputField, index) => (
-              <div key={inputField.id}>
-                <TextField
-                  name='ingredientName'
-                  label='Ingredient'
-                  variant='filled'
-                  value={inputField.ingredientName}
-                  onChange={(event) => handleChangeIngredients(inputField.id, event)}
-                />
-                <TextField
-                  name='amount'
-                  label='Amount'
-                  variant='filled'
-                  value={inputField.amount}
-                  onChange={(event) => handleChangeIngredients(inputField.id, event)}
-                />
-                <TextField
-                  name='measure'
-                  label='Measure'
-                  variant='filled'
-                  value={inputField.measure}
-                  onChange={(event) => handleChangeIngredients(inputField.id, event)}
-                />
-                <IconButton disabled={ingredients.length === 1} onClick={() => handleRemoveIngredient(inputField.id)}>
-                  <RemoveIcon />
-                </IconButton>
-                {index + 1 === ingredients.length && (
-                  <IconButton onClick={handleAddIngredient}>
-                    <AddIcon />
-                  </IconButton>
-                )}
-              </div>
-            ))}
+            <IngredientsForm submitIngredients={handleSubmit} initialIngredients={[new Ingredient({})]} />
           </Box>
           <TextField id='method' label='Method' multiline maxRows={99} value={recipe.method} onChange={handleChange} />
           <TextField

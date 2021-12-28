@@ -1,0 +1,29 @@
+{
+  "users": [
+    {
+      "id": "user-uuid1234",
+      "ingredients": [
+        { "id": 1, "name": "salt", "amount": 1000, "measure": "grams" },
+        { "id": 2, "name": "pepper", "amount": 1000, "measure": "grams" },
+        { "id": 3, "name": "butter", "amount": 1000, "measure": "grams" },
+        { "id": 4, "name": "pasta", "amount": 1000, "measure": "grams" }
+      ]
+    },
+    {
+      "id": "user-uuid2345",
+      "ingredients": [
+        { "id": 1, "name": "salt", "amount": 1000, "measure": "grams" },
+        { "id": 2, "name": "pepper", "amount": 1000, "measure": "grams" },
+        { "id": 3, "name": "butter", "amount": 1000, "measure": "grams" }
+      ]
+    },
+    {
+      "id": "user-uuid3456",
+      "ingredients": [
+        { "id": 1, "name": "salt", "amount": 1000, "measure": "grams" },
+        { "id": 2, "name": "pepper", "amount": 1000, "measure": "grams" },
+        { "id": 3, "name": "butter", "amount": 1000, "measure": "grams" }
+      ]
+    }
+  ]
+}
