@@ -1,10 +1,10 @@
 import { recipeService } from '../../app/index';
 
-export default function handler(req, res) {
-  if (req.method === 'GET') {
-    return recipeService.getAllRecipes().then((recipes) => {
-      console.log(recipes);
-      return res.status(200).json({ recipes });
-    });
-  }
+export default async function handler(req, res) {
+  try {
+    if (req.method === 'GET') {
+      const response = await recipeService.getAllRecipes();
+      return res.status(200).json({ recipes: response });
+    }
+  } catch (error) {}
 }

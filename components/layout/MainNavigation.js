@@ -15,6 +15,9 @@ export default function MainNavigation() {
           <li>
             <Link href='/my-ingredients'>My Ingredients</Link>
           </li>
+          <li>
+            <Link href='/recipes/new'>Add Recipe</Link>
+          </li>
         </ul>
       </nav>
     </header>
