@@ -43,7 +43,7 @@ export default function Pantry({ userIngredients }) {
 
 export async function getStaticProps() {
   // const userId = window.localStorage.getItem('recipleaseUserId')
-  const userId = 'user-uuid1234'
+  const userId = 'user-uuid1234' // for testing
   const res = await fetch(`${config.get('host')}/api/get-user?userId=${userId}`, {
     method: 'GET',
   });
@@ -56,7 +56,7 @@ export async function getStaticProps() {
     props: {
       userIngredients: data.user.pantry.ingredients,
     },
-    revalidate: 10,
+    revalidate: 1,
   };
 }
 

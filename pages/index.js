@@ -9,7 +9,6 @@ export default function Home(props) {
   const handleAddRecipe = async () => {
     try {
       const res = await fetch('/api/add-recipe');
-      console.log(await res.json());
     } catch (error) {
       console.log(error);
     }
@@ -18,7 +17,6 @@ export default function Home(props) {
   const handleGetAllRecipes = async () => {
     try {
       const res = await fetch('/api/all-recipes');
-      console.log(await res.json());
     } catch (error) {
       console.log(error);
     }
@@ -45,7 +43,7 @@ export default function Home(props) {
 //   // used for dynamic pages
 //   // would programatically get all ids here => eg. get all recipeids from db
 //   return {
-//     fallback: false, // false = paths contails all pages | true = pages not found would be generated dynamically
+//     fallback: false, // false = paths contains all pages | true = pages not found would be generated dynamically
 //     // fallback is useful for prerendering popular pages
 //     paths: [
 //       {

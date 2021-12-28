@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import config from 'config';
 
 import { Typography, ListItemText, Divider, ListItem, List } from '@mui/material';
+import RecipeList from '../../components/RecipeList';
 
 export default function Recipes({ recipes }) {
   const router = useRouter();
@@ -10,25 +11,7 @@ export default function Recipes({ recipes }) {
   return (
     <>
       <h1>All Recipes</h1>
-      <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-        {recipes.map((recipe, index) => {
-          return (
-            <ListItem key={index} alignItems='flex-start'>
-              <ListItemText
-                primary={recipe.title}
-                secondary={
-                  <>
-                    <Typography sx={{ display: 'inline' }} component='span' variant='body2' color='text.primary'>
-                    {(recipe.ingredientsSource.ingredients.map((ingredient, index) => ingredient.name)).join(', ')}
-                    </Typography>
-                  </>
-                }
-              />
-            </ListItem>
-          );
-        })}
-        <Divider variant='inset' component='li' />
-      </List>
+      <RecipeList recipes={recipes} />
     </>
   );
 }
