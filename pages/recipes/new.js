@@ -12,12 +12,15 @@ export default function Recipes() {
   const router = useRouter();
   const [recipe, setRecipe] = useState({
     title: '',
-    ingredients: [],
     method: '',
     time: '',
   });
 
+  const [ingredients, setIngredients] = useState([new Ingredient({})]);
+
   const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log({ recipe });
     try {
       const submitRecipe = {
         ...recipe,
@@ -66,7 +69,11 @@ export default function Recipes() {
             noValidate
             autoComplete='off'
           >
-            <IngredientsForm submitIngredients={handleSubmit} initialIngredients={[new Ingredient({})]} />
+            <IngredientsForm
+              submitIngredients={handleSubmit}
+              initialIngredients={ingredients}
+              setIngredients={setIngredients}
+            />
           </Box>
           <TextField id='method' label='Method' multiline maxRows={99} value={recipe.method} onChange={handleChange} />
           <TextField

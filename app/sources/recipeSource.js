@@ -1,5 +1,5 @@
 const config = require('config');
-const Recipe = require('../recipe')
+const Recipe = require('../recipe');
 const faunadb = require('faunadb');
 
 const client = new faunadb.Client({ secret: config.get('faunaSecret') });
@@ -11,22 +11,59 @@ module.exports = class RecipeSource {
   initializeRecipes() {}
 
   async getAllRecipes() {
-    console.log('here');
-
     try {
-      const recipes = await client.query(q.Map(
-        q.Paginate(q.Documents(q.Collection('recipes'))),
-        q.Lambda(x => q.Get(x))
-      ));
-      const mappedRecipes = await recipes.data.map(recipe => new Recipe(recipe.data))
-      console.log(mappedRecipes);
+      const recipes = await client.query(
+        q.Map(
+          q.Paginate(q.Documents(q.Collection('recipes'))),
+          q.Lambda((x) => q.Get(x))
+        )
+      );
+      const mappedRecipes = await recipes.data.map((recipe) => new Recipe(recipe.data));
       return mappedRecipes;
     } catch (error) {
       console.log(error);
     }
   }
 
-  addRecipe(recipe) {}
+  async addRecipe(recipe) {
+    try {
+      const ingredients = await Promise.all(
+        recipe.ingredients.map(async (ingredient) => {
+          const strippedIngredient = Object.assign({}, ingredient);
+          delete strippedIngredient.amount;
+          delete strippedIngredient.measure;
+
+          const document = await client.query(
+            q.Let(
+              {
+                ref: q.Match(q.Index('ingredient_by_name'), ingredient.name),
+              },
+              q.If(
+                q.Exists(q.Var('ref')),
+                q.Get(q.Var('ref')),
+                q.Create(q.Collection('ingredients'), { data: strippedIngredient })
+              )
+            )
+          );
+          return { ingredient: document.ref, amount: ingredient.amount, measure: ingredient.measure };
+        })
+      );
+      const document = await client.query(
+        q.Create(q.Collection('recipes'), {
+          data: {
+            title: recipe.title,
+            ingredients: ingredients,
+            method: recipe.method,
+            time: recipe.time,
+            imageUrl: recipe.imageUrl,
+          },
+        })
+      );
+      return document;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   getRecipeByIngredients(pantry) {}
 };

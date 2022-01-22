@@ -1,27 +1,18 @@
 const { v4: uuidv4 } = require('uuid');
 
 module.exports = class Ingredient {
-  constructor({
-    id,
-    name,
-    description,
-    amount,
-    measure,
-    caloriesPerServing,
-    categories,
-    alternatives,
-  }) {
-    this.id = id || uuidv4();
-    this.name = name || '';
-    this.description = description || '';
-    this.amount = amount || '';
-    this.measure = measure || '';
-    this.caloriesPerServing = caloriesPerServing;
-    this.categories = categories || [];
-    this.alternatives = alternatives || [];
+  constructor(data) {
+    this.id = data.id || uuidv4();
+    this.name = data.name || '';
+    this.description = data.description || '';
+    this.amount = data.amount || '';
+    this.measure = data.measure || '';
+    this.caloriesPerServing = data.caloriesPerServing;
+    this.categories = data.categories || [];
+    this.alternatives = data.alternatives || [];
   }
 
-  amendQuantity({amount, measure}) {
+  amendQuantity({ amount, measure }) {
     if (measure === this.measure) {
       const newQuantity = this.amount - amount;
       this.amount = newQuantity > 0 ? newQuantity : 0;

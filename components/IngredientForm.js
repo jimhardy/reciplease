@@ -6,8 +6,8 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import { v4 as uuidv4 } from 'uuid';
 
-export default function IngredientsForm({ submitIngredients, initialIngredients }) {
-  const [ingredients, setIngredients] = useState(initialIngredients);
+export default function IngredientsForm({ submitIngredients, initialIngredients, setIngredients }) {
+  const [stateIngredients, setStateIngredients] = useState(initialIngredients);
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
@@ -18,9 +18,16 @@ export default function IngredientsForm({ submitIngredients, initialIngredients 
     }
   }, [saved]);
 
+  useEffect(() => {
+    if (initialIngredients !== stateIngredients) {
+      console.log('setting ingredients', stateIngredients);
+      setIngredients(stateIngredients);
+    }
+  }, [initialIngredients, setIngredients, stateIngredients]);
+
   const handleSubmit = async (e) => {
     try {
-      const response = await submitIngredients(ingredients);
+      const response = await submitIngredients(stateIngredients);
       if (response) {
         setSaved(true);
       }
@@ -31,26 +38,26 @@ export default function IngredientsForm({ submitIngredients, initialIngredients 
   };
 
   const handleChangeIngredients = (id, event) => {
-    const newInputFields = ingredients.map((i) => {
+    const newInputFields = stateIngredients.map((i) => {
       if (id === i.id) {
         i[event.target.name] = event.target.value;
       }
       return i;
     });
-    setIngredients(newInputFields);
+    setStateIngredients(newInputFields);
   };
 
   const handleAddIngredient = () => {
-    setIngredients([...ingredients, { id: uuidv4(), name: '', amount: '', measure: '' }]);
+    setStateIngredients([...stateIngredients, { id: uuidv4(), name: '', amount: '', measure: '' }]);
   };
 
   const handleRemoveIngredient = (id) => {
-    const values = [...ingredients];
+    const values = [...stateIngredients];
     values.splice(
       values.findIndex((value) => value.id === id),
       1
     );
-    setIngredients(values);
+    setStateIngredients(values);
   };
 
   return (
@@ -72,9 +79,15 @@ export default function IngredientsForm({ submitIngredients, initialIngredients 
             noValidate
             autoComplete='off'
           >
-            {ingredients.map((inputField, index) => (
+            {stateIngredients.map((inputField, index) => (
               <div key={inputField.id}>
-                
+                <TextField
+                  name='name'
+                  label='Name'
+                  variant='filled'
+                  value={inputField.name}
+                  onChange={(event) => handleChangeIngredients(inputField.id, event)}
+                />
                 <TextField
                   name='amount'
                   label='Amount'
@@ -89,10 +102,13 @@ export default function IngredientsForm({ submitIngredients, initialIngredients 
                   value={inputField.measure}
                   onChange={(event) => handleChangeIngredients(inputField.id, event)}
                 />
-                <IconButton disabled={ingredients.length === 1} onClick={() => handleRemoveIngredient(inputField.id)}>
+                <IconButton
+                  disabled={stateIngredients.length === 1}
+                  onClick={() => handleRemoveIngredient(inputField.id)}
+                >
                   <RemoveIcon />
                 </IconButton>
-                {index + 1 === ingredients.length && (
+                {index + 1 === stateIngredients.length && (
                   <IconButton onClick={handleAddIngredient}>
                     <AddIcon />
                   </IconButton>
