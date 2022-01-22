@@ -1,6 +1,7 @@
 const UserService = require('./userService');
 const UserSource = require('./fixtures/fakes/fakeUserSource');
-const RecipeSource = require('./fixtures/fakes/fakeRecipeSource');
+// const RecipeSource = require('./fixtures/fakes/fakeRecipeSource');
+const RecipeSource = require('./sources/recipeSource');
 const RecipeService = require('./recipeService');
 
 const userService = new UserService(new UserSource());

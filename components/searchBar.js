@@ -57,7 +57,7 @@ function Tag(props) {
   const { label, onDelete, ...other } = props;
   return (
     <div {...other}>
-      <span>{label}</span>
+      <span>{label}s</span>
       <CloseIcon onClick={onDelete} />
     </div>
   );
