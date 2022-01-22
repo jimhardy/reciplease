@@ -1,5 +1,6 @@
 const config = require('config');
 const Recipe = require('../recipe');
+const Ingredient = require('../ingredient');
 const faunadb = require('faunadb');
 
 const client = new faunadb.Client({ secret: config.get('faunaSecret') });
@@ -18,7 +19,19 @@ module.exports = class RecipeSource {
           q.Lambda((x) => q.Get(x))
         )
       );
-      const mappedRecipes = await recipes.data.map((recipe) => new Recipe(recipe.data));
+      const mappedRecipes = await Promise.all(
+        recipes.data.map(async (recipe) => {
+          const ingredents = await Promise.all(
+            recipe.data.ingredients.map(async (entry) => {
+              const document = await client.query(q.Get(entry.ingredient));
+              return document.data;
+            })
+          );
+          const result = new Recipe({ ...recipe.data, ingredients: ingredents });
+          return result;
+        })
+      );
+
       return mappedRecipes;
     } catch (error) {
       console.log(error);

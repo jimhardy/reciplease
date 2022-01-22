@@ -23,7 +23,7 @@ export default function RecipeCard({ recipe }) {
         }
       />
       <Typography sx={{ display: 'inline' }} component='span' variant='body2' color='text.primary'>
-        {recipe.ingredientsSource.ingredients.map((ingredient, index) => ingredient.name).join(', ')}
+        {recipe.ingredientsSource?.ingredients.map((ingredient, index) => ingredient.name).join(', ')}
       </Typography>
     </ListItem>
   );
