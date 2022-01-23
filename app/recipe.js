@@ -12,11 +12,10 @@ module.exports = class Recipe {
   }
 
   addIngredients(ingredients) {
+    console.log(ingredients);
     const ingredientsSource = new IngredientsSource();
 
-    ingredients.forEach((ingredient) =>
-      ingredientsSource.addIngredient(ingredient)
-    );
+    ingredients.forEach((ingredient) => ingredientsSource.addIngredient(ingredient));
 
     return ingredientsSource;
   }

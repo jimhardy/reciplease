@@ -2,6 +2,8 @@ const config = require('config');
 const Recipe = require('../recipe');
 const Ingredient = require('../ingredient');
 const faunadb = require('faunadb');
+const { xit } = require('mocha');
+const { Select } = require('faunadb');
 
 const client = new faunadb.Client({ secret: config.get('faunaSecret') });
 
@@ -13,26 +15,46 @@ module.exports = class RecipeSource {
 
   async getAllRecipes() {
     try {
+      let x;
       const recipes = await client.query(
         q.Map(
           q.Paginate(q.Documents(q.Collection('recipes'))),
-          q.Lambda((x) => q.Get(x))
+          q.Lambda(
+            'recipe',
+            q.Let(
+              {
+                recipeDetails: q.Get(q.Var('recipe')),
+                title: q.Select(['data', 'title'], q.Var('recipeDetails')),
+                method: q.Select(['data', 'method'], q.Var('recipeDetails')),
+                time: q.Select(['data', 'time'], q.Var('recipeDetails')),
+                ingredients: q.Map(
+                  q.Select(['data', 'ingredients'], q.Var('recipeDetails')),
+                  q.Lambda(
+                    'ingredient',
+                    q.Let(
+                      {
+                        ingredientDetail: q.Get(q.Select(['ingredient'], q.Var('ingredient'))),
+                      },
+                      {
+                        name: q.Select(['data', 'name'], q.Var('ingredientDetail')),
+                        amount: q.Select(['amount'], q.Var('ingredient')),
+                        measure: q.Select(['measure'], q.Var('ingredient')),
+                      }
+                    )
+                  )
+                ),
+              },
+              {
+                title: q.Var('title'),
+                method: q.Var('method'),
+                time: q.Var('time'),
+                ingredients: q.Var('ingredients'),
+              }
+            )
+          )
         )
       );
-      const mappedRecipes = await Promise.all(
-        recipes.data.map(async (recipe) => {
-          const ingredents = await Promise.all(
-            recipe.data.ingredients.map(async (entry) => {
-              const document = await client.query(q.Get(entry.ingredient));
-              return document.data;
-            })
-          );
-          const result = new Recipe({ ...recipe.data, ingredients: ingredents });
-          return result;
-        })
-      );
-
-      return mappedRecipes;
+      return Promise.all(recipes.data.map(async (recipe) => new Recipe(recipe)));
     } catch (error) {
       console.log(error);
     }
