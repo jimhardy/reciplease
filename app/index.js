@@ -1,11 +1,17 @@
-const UserService = require('./userService');
-const UserSource = require('./fixtures/fakes/fakeUserSource');
-// const RecipeSource = require('./fixtures/fakes/fakeRecipeSource');
+const config = require('config');
+const faunadb = require('faunadb');
+const dbClient = new faunadb.Client({ secret: config.get('faunaSecret') });
+
 const RecipeSource = require('./sources/recipeSource');
+const UserSource = require('./sources/userSource');
+
+const UserService = require('./userService');
 const RecipeService = require('./recipeService');
 
-const userService = new UserService(new UserSource());
-const recipeService = new RecipeService(new RecipeSource());
+const userSource = new UserSource(dbClient);
+const recipeSource = new RecipeSource(dbClient);
+const userService = new UserService(userSource);
+const recipeService = new RecipeService(recipeSource);
 
 module.exports = {
   userService,

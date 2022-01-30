@@ -12,14 +12,19 @@ module.exports = class UserSource {
 
   initializeUsers() {
     userStore.users.forEach((user) => this.withUser(user.id, user.ingredients));
+    console.log('userSource initialized');
   }
 
-  getUser(id) {
-    const user = this.userSource.find((user) => user.id === id);
-    if (user) {
-      return user;
-    } else {
-      return this.addUser();
+  async getUser(id) {
+    try {
+      const user = await this.userSource.find((user) => user.id === id);
+      if (user) {
+        return Promise.resolve(user);
+      } else {
+        return this.addUser();
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 

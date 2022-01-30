@@ -1,22 +1,20 @@
-const config = require('config');
 const Recipe = require('../recipe');
-const Ingredient = require('../ingredient');
 const faunadb = require('faunadb');
-const { xit } = require('mocha');
-const { Select } = require('faunadb');
-
-const client = new faunadb.Client({ secret: config.get('faunaSecret') });
 
 const q = faunadb.query;
 
 module.exports = class RecipeSource {
-  constructor() {}
+  constructor(dbClient, q) {
+    this.recipes = [];
+    this.client = dbClient;
+    this.q = q;
+  }
   initializeRecipes() {}
 
   async getAllRecipes() {
     try {
       let x;
-      const recipes = await client.query(
+      const recipes = await this.client.query(
         q.Map(
           q.Paginate(q.Documents(q.Collection('recipes'))),
           q.Lambda(
@@ -68,7 +66,7 @@ module.exports = class RecipeSource {
           delete strippedIngredient.amount;
           delete strippedIngredient.measure;
 
-          const document = await client.query(
+          const document = await this.client.query(
             q.Let(
               {
                 ref: q.Match(q.Index('ingredient_by_name'), ingredient.name),
@@ -83,7 +81,7 @@ module.exports = class RecipeSource {
           return { ingredient: document.ref, amount: ingredient.amount, measure: ingredient.measure };
         })
       );
-      const document = await client.query(
+      const document = await this.client.query(
         q.Create(q.Collection('recipes'), {
           data: {
             title: recipe.title,
@@ -100,5 +98,38 @@ module.exports = class RecipeSource {
     }
   }
 
-  getRecipeByIngredients(pantry) {}
+  async getRecipeByIngredients(pantry) {
+    const matchingRecipes = [];
+    const partialRecipes = [];
+    const recipes = await this.getAllRecipes();
+    await Promise.all(
+      recipes.map((recipe) => {
+        const missingIngredients = [];
+        recipe.ingredientsSource.ingredients.forEach((ingredient) => {
+          if (
+            !pantry.find(
+              (pantryIngredient) =>
+                pantryIngredient.name === ingredient.name &&
+                pantryIngredient.measure === ingredient.measure &&
+                pantryIngredient.amount >= ingredient.amount
+            )
+          ) {
+            missingIngredients.push(ingredient);
+          }
+        });
+
+        const score =
+          (recipe.ingredientsSource.ingredients.length - missingIngredients.length) /
+          recipe.ingredientsSource.ingredients.length;
+
+        if (score === 1) {
+          matchingRecipes.push(recipe);
+        } else if (score > 0) {
+          partialRecipes.push({ recipe, missingIngredients });
+        }
+        console.log({ matchingRecipes, partialRecipes });
+      })
+    );
+    return { matchingRecipes, partialRecipes };
+  }
 };

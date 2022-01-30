@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
 import { TextField, Typography, Button, IconButton, Box, List, ListItem } from '@mui/material';
@@ -8,10 +8,14 @@ import config from 'config';
 export default function Home({ user }) {
   const [recipes, setRecipes] = useState([]);
 
+  useEffect(() => {
+    console.log('recipes updated');
+  }, [recipes]);
+
   const handleSearch = async () => {
-    const res = await fetch(`/api/search-recipes?userId=${user.id}`, {
-      method: 'GET',
-    });
+    const res = await fetch(`/api/search-recipes?userId=${user.id || '322211351154917961'}`);
+    const data = res.json();
+    setRecipes(data);
   };
 
   return (
@@ -25,7 +29,7 @@ export default function Home({ user }) {
         <Typography variant='h3'>Reciplease</Typography>
         <Typography variant='h7'>Your ingredients:</Typography>
         {/* combobox */}
-        <SearchBar /> 
+        <SearchBar />
         <Button onClick={handleSearch} variant='outlined'>
           Search
         </Button>
@@ -37,7 +41,7 @@ export default function Home({ user }) {
 
 export async function getStaticProps() {
   // const userId = window.localStorage.getItem('recipleaseUserId')
-  const userId = 'user-uuid1234'; // for testing
+  const userId = '322211351154917961'; // for testing
   const res = await fetch(`${config.get('host')}/api/get-user?userId=${userId}`, {
     method: 'GET',
   });
@@ -45,8 +49,6 @@ export async function getStaticProps() {
   if (!data) {
     return { notfound: true };
   }
-  console.log('here');
-  console.log(data.user);
   return {
     props: {
       user: data.user,

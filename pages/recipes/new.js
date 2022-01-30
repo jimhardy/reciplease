@@ -20,7 +20,6 @@ export default function Recipes() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ recipe });
     try {
       const submitRecipe = {
         ...recipe,

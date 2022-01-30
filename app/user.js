@@ -1,9 +1,10 @@
 const IngredientsSource = require('./fixtures/fakes/fakeIngredientsSource');
 
 module.exports = class User {
-  constructor(id) {
-    this.pantry = new IngredientsSource();
+  constructor({ id, name, pantry }) {
     this.id = id;
+    this.name = name;
+    this.pantry = new IngredientsSource(pantry || []);
   }
 
   addIngredient(ingredient) {

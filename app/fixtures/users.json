@@ -13,8 +13,7 @@
       "id": "user-uuid2345",
       "ingredients": [
         { "id": 1, "name": "salt", "amount": 1000, "measure": "grams" },
-        { "id": 2, "name": "pepper", "amount": 1000, "measure": "grams" },
-        { "id": 3, "name": "butter", "amount": 1000, "measure": "grams" }
+        { "id": 2, "name": "pepper", "amount": 200, "measure": "grams" }
       ]
     },
     {
