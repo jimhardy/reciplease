@@ -21,9 +21,9 @@ export default function IngredientsForm({ submitIngredients, initialIngredients,
   useEffect(() => {
     if (initialIngredients !== stateIngredients) {
       console.log('setting ingredients', stateIngredients);
-      setIngredients(stateIngredients);
+      setStateIngredients(stateIngredients);
     }
-  }, [initialIngredients, setIngredients, stateIngredients]);
+  }, [initialIngredients, setStateIngredients, stateIngredients]);
 
   const handleSubmit = async (e) => {
     try {

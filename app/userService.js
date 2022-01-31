@@ -5,11 +5,17 @@ module.exports = class UserService {
     console.log('UserService initialized');
   }
 
-  getUser(id) {
-    return this.userSource.getUser(id);
+  async getUser(id) {
+    return Promise.resolve(this.userSource.getUser(id));
   }
 
-  addUser() {
-    return this.userSource.addUser();
+  async addUser() {
+    return Promise.resolve(this.userSource.addUser());
+  }
+
+  async updateUserPantry(userId, ingredients) {
+    const response = await this.userSource.updateUserPantry(userId, ingredients);
+    console.log('updateUserPantry', response);
+    return Promise.resolve(response);
   }
 };

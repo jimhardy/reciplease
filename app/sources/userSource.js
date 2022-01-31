@@ -4,9 +4,10 @@ const faunadb = require('faunadb');
 const q = faunadb.query;
 
 module.exports = class UserSource {
-  constructor(dbClient) {
+  constructor(dbClient, ingredientsService) {
     this.recipes = [];
     this.client = dbClient;
+    this.ingredientsService = ingredientsService;
   }
   initializeRecipes() {}
 
@@ -41,10 +42,22 @@ module.exports = class UserSource {
           }
         )
       );
-      console.log('found user', user);
       return new User(user);
     } catch (error) {
       console.log('user not found', error);
     }
+  }
+
+  async updateUserPantry(userId, ingredients) {
+    const ingredientRefs = await this.ingredientsService.getIngredientIds(ingredients); // []
+    const response = await this.client.query(
+      q.Update(q.Ref(q.Collection('users'), userId), {
+        data: {
+          pantry: ingredientRefs,
+        },
+      })
+    );
+    console.log({ response });
+    return Promise.resolve(response);
   }
 };

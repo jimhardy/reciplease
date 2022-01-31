@@ -1,4 +1,5 @@
 const IngredientsSource = require('./fixtures/fakes/fakeIngredientsSource');
+const { userService } = require('./index');
 
 module.exports = class User {
   constructor({ id, name, pantry }) {

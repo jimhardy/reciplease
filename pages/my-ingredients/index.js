@@ -6,12 +6,12 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import { v4 as uuidv4 } from 'uuid';
 import IngredientsForm from '../../components/IngredientForm';
-import config from 'config'
+import config from 'config';
 
-export default function Pantry({ userIngredients }) {
+export default function Pantry({ userIngredients, userId }) {
   const handleSubmit = async (ingredients) => {
     try {
-      const response = await fetch('/api/save-pantry', {
+      const response = await fetch(`/api/save-pantry?userId=${userId}`, {
         method: 'POST',
         body: JSON.stringify(ingredients),
         headers: {
@@ -40,10 +40,9 @@ export default function Pantry({ userIngredients }) {
   );
 }
 
-
 export async function getStaticProps() {
   // const userId = window.localStorage.getItem('recipleaseUserId')
-  const userId = 'user-uuid1234' // for testing
+  const userId = '322211351154917961'; // for testing
   const res = await fetch(`${config.get('host')}/api/get-user?userId=${userId}`, {
     method: 'GET',
   });
@@ -55,8 +54,8 @@ export async function getStaticProps() {
   return {
     props: {
       userIngredients: data.user.pantry.ingredients,
+      userId: userId,
     },
     revalidate: 1,
   };
 }
-

@@ -4,10 +4,11 @@ const faunadb = require('faunadb');
 const q = faunadb.query;
 
 module.exports = class RecipeSource {
-  constructor(dbClient, q) {
+  constructor(dbClient, q, ingredientsService) {
     this.recipes = [];
     this.client = dbClient;
     this.q = q;
+    this.ingredientsService = ingredientsService;
   }
   initializeRecipes() {}
 
@@ -60,27 +61,7 @@ module.exports = class RecipeSource {
 
   async addRecipe(recipe) {
     try {
-      const ingredients = await Promise.all(
-        recipe.ingredients.map(async (ingredient) => {
-          const strippedIngredient = Object.assign({}, ingredient);
-          delete strippedIngredient.amount;
-          delete strippedIngredient.measure;
-
-          const document = await this.client.query(
-            q.Let(
-              {
-                ref: q.Match(q.Index('ingredient_by_name'), ingredient.name),
-              },
-              q.If(
-                q.Exists(q.Var('ref')),
-                q.Get(q.Var('ref')),
-                q.Create(q.Collection('ingredients'), { data: strippedIngredient })
-              )
-            )
-          );
-          return { ingredient: document.ref, amount: ingredient.amount, measure: ingredient.measure };
-        })
-      );
+      const ingredients = this.ingredientsService.getIngredientIds(recipe.ingredients);
       const document = await this.client.query(
         q.Create(q.Collection('recipes'), {
           data: {
@@ -105,7 +86,7 @@ module.exports = class RecipeSource {
     await Promise.all(
       recipes.map((recipe) => {
         const missingIngredients = [];
-        recipe.ingredientsSource.ingredients.forEach((ingredient) => {
+        recipe.ingredientsService.ingredients.forEach((ingredient) => {
           if (
             !pantry.find(
               (pantryIngredient) =>
@@ -119,8 +100,8 @@ module.exports = class RecipeSource {
         });
 
         const score =
-          (recipe.ingredientsSource.ingredients.length - missingIngredients.length) /
-          recipe.ingredientsSource.ingredients.length;
+          (recipe.ingredientsService.ingredients.length - missingIngredients.length) /
+          recipe.ingredientsService.ingredients.length;
 
         if (score === 1) {
           matchingRecipes.push(recipe);

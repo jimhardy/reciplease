@@ -8,12 +8,20 @@ const UserSource = require('./sources/userSource');
 const UserService = require('./userService');
 const RecipeService = require('./recipeService');
 
-const userSource = new UserSource(dbClient);
-const recipeSource = new RecipeSource(dbClient);
+const IngredientsSource = require('./sources/ingredientsSource');
+const IngredientsService = require('./ingredientsService');
+
+const ingredientsSource = new IngredientsSource(dbClient);
+const ingredientsService = new IngredientsService(ingredientsSource);
+
+const userSource = new UserSource(dbClient, ingredientsService);
+const recipeSource = new RecipeSource(dbClient, ingredientsService);
+
 const userService = new UserService(userSource);
 const recipeService = new RecipeService(recipeSource);
 
 module.exports = {
   userService,
   recipeService,
+  ingredientsService,
 };
