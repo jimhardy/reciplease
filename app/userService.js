@@ -15,7 +15,6 @@ module.exports = class UserService {
 
   async updateUserPantry(userId, ingredients) {
     const response = await this.userSource.updateUserPantry(userId, ingredients);
-    console.log('updateUserPantry', response);
     return Promise.resolve(response);
   }
 };

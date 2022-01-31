@@ -29,7 +29,6 @@ module.exports = class IngredientsSource {
     try {
       const response = await Promise.all(
         ingredients.map(async (ingredient) => {
-          console.log('heeeeeeeeeeeeeere', ingredient.name);
           const strippedIngredient = Object.assign({}, ingredient);
           delete strippedIngredient.amount;
           delete strippedIngredient.measure;
@@ -46,11 +45,9 @@ module.exports = class IngredientsSource {
               )
             )
           );
-          console.log(document.ref);
           return { ingredient: document.ref, amount: ingredient.amount, measure: ingredient.measure };
         })
       );
-      console.log({ response });
       return response;
     } catch (error) {
       throw new Error(error);

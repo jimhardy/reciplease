@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { TextField, Typography, FormControl, IconButton, Button, Box } from '@mui/material';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -9,6 +9,10 @@ import IngredientsForm from '../../components/IngredientForm';
 import config from 'config';
 
 export default function Pantry({ userIngredients, userId }) {
+  useEffect(() => {
+    console.log('updated Ingredients');
+  }, [userIngredients]);
+
   const handleSubmit = async (ingredients) => {
     try {
       const response = await fetch(`/api/save-pantry?userId=${userId}`, {
@@ -18,6 +22,8 @@ export default function Pantry({ userIngredients, userId }) {
           'Content-Type': 'application/json',
         },
       });
+      console.log('here');
+      console.log({ response });
       return response.json();
     } catch (error) {
       console.log('error submitting ingredients');
