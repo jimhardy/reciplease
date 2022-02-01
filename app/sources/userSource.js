@@ -50,14 +50,13 @@ module.exports = class UserSource {
 
   async updateUserPantry(userId, ingredients) {
     const ingredientRefs = await this.ingredientsService.getIngredientIds(ingredients); // []
-    await this.client.query(
+    const response = await this.client.query(
       q.Update(q.Ref(q.Collection('users'), userId), {
         data: {
           pantry: ingredientRefs,
         },
       })
     );
-    const response = await this.getUser(userId);
     return Promise.resolve(response);
   }
 };

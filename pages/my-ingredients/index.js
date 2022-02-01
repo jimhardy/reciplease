@@ -9,10 +9,6 @@ import IngredientsForm from '../../components/IngredientForm';
 import config from 'config';
 
 export default function Pantry({ userIngredients, userId }) {
-  useEffect(() => {
-    console.log('updated Ingredients');
-  }, [userIngredients]);
-
   const handleSubmit = async (ingredients) => {
     try {
       const response = await fetch(`/api/save-pantry?userId=${userId}`, {
@@ -22,8 +18,7 @@ export default function Pantry({ userIngredients, userId }) {
           'Content-Type': 'application/json',
         },
       });
-      console.log('here');
-      console.log({ response });
+
       return response.json();
     } catch (error) {
       console.log('error submitting ingredients');
@@ -41,7 +36,7 @@ export default function Pantry({ userIngredients, userId }) {
       autoComplete='off'
     >
       <Typography variant='h3'>Your Ingredients</Typography>
-      <IngredientsForm submitIngredients={handleSubmit} initialIngredients={userIngredients} />
+      <IngredientsForm submitIngredients={handleSubmit} initialIngredients={userIngredients} type={'pantry'} />
     </Box>
   );
 }
