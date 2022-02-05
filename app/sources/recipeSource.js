@@ -4,10 +4,9 @@ const faunadb = require('faunadb');
 const q = faunadb.query;
 
 module.exports = class RecipeSource {
-  constructor(dbClient, q, ingredientsService) {
+  constructor(dbClient, ingredientsService) {
     this.recipes = [];
     this.client = dbClient;
-    this.q = q;
     this.ingredientsService = ingredientsService;
   }
   initializeRecipes() {}
@@ -60,6 +59,7 @@ module.exports = class RecipeSource {
   }
 
   async addRecipe(recipe) {
+    console.log(this.ingredientsService);
     try {
       const ingredients = this.ingredientsService.getIngredientIds(recipe.ingredients);
       const document = await this.client.query(
@@ -86,7 +86,7 @@ module.exports = class RecipeSource {
     await Promise.all(
       recipes.map((recipe) => {
         const missingIngredients = [];
-        recipe.ingredientsService.ingredients.forEach((ingredient) => {
+        recipe.ingredientsSource.ingredients.forEach((ingredient) => {
           if (
             !pantry.find(
               (pantryIngredient) =>
@@ -100,15 +100,14 @@ module.exports = class RecipeSource {
         });
 
         const score =
-          (recipe.ingredientsService.ingredients.length - missingIngredients.length) /
-          recipe.ingredientsService.ingredients.length;
+          (recipe.ingredientsSource.ingredients.length - missingIngredients.length) /
+          recipe.ingredientsSource.ingredients.length;
 
         if (score === 1) {
           matchingRecipes.push(recipe);
         } else if (score > 0) {
           partialRecipes.push({ recipe, missingIngredients });
         }
-        console.log({ matchingRecipes, partialRecipes });
       })
     );
     return { matchingRecipes, partialRecipes };

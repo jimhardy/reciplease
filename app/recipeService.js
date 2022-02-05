@@ -7,14 +7,16 @@ module.exports = class RecipeService {
 
   async addRecipe(recipe) {
     const response = await this.recipeSource.addRecipe(recipe);
-    return Promise.resolve(response);
+    return response;
   }
 
-  getAllRecipes() {
-    return this.recipeSource.getAllRecipes();
+  async getAllRecipes() {
+    const response = await this.recipeSource.getAllRecipes();
+    return response;
   }
 
-  getRecipeByIngredients(pantry) {
-    return this.recipeSource.getRecipeByIngredients(pantry);
+  async getRecipeByIngredients(pantry) {
+    const response = await this.recipeSource.getRecipeByIngredients(pantry);
+    return response;
   }
 };

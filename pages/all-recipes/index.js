@@ -20,7 +20,6 @@ export async function getStaticProps() {
   const res = await fetch(`${config.get('host')}/api/all-recipes`, {
     method: 'GET',
   });
-  console.log({ res });
   const data = await res.json();
 
   if (!data) {

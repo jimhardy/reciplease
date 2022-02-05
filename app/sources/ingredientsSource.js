@@ -27,6 +27,7 @@ module.exports = class IngredientsSource {
 
   async getIngredientIds(ingredients) {
     try {
+      console.log(ingredients);
       const response = await Promise.all(
         ingredients.map(async (ingredient) => {
           const strippedIngredient = Object.assign({}, ingredient);

@@ -6,16 +6,19 @@ import RecipeList from '../components/RecipeList';
 import SearchBar from '../components/searchBar';
 import config from 'config';
 export default function Home({ user }) {
-  const [recipes, setRecipes] = useState([]);
+  const [recipes, setRecipes] = useState({ matchingRecipes: [], partialRecipes: [] });
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    console.log('recipes updated');
-  }, [recipes]);
+  // useEffect(() => {
+  //   console.log(Object.keys(recipes));
+  // }, [recipes]);
 
-  const handleSearch = async () => {
-    const res = await fetch(`/api/search-recipes?userId=${user.id || '322211351154917961'}`);
-    const data = res.json();
+  const handleSearch = async (e) => {
+    setLoading(true);
+    const res = await fetch(`/api/search-recipes?userId=${user.id || '322211351154917961'}`).then((res) => res.json());
+    const data = res.recipes;
     setRecipes(data);
+    setLoading(false);
   };
 
   return (
@@ -27,13 +30,30 @@ export default function Home({ user }) {
 
       <main className={styles.main}>
         <Typography variant='h3'>Reciplease</Typography>
-        <Typography variant='h7'>Your ingredients:</Typography>
+        {/* <Typography variant='h7'>Your ingredients:</Typography> */}
         {/* combobox */}
-        <SearchBar />
+        {/* <SearchBar /> */}
         <Button onClick={handleSearch} variant='outlined'>
           Search
         </Button>
-        {recipes.length ? <RecipeList recipes={recipes} /> : <Typography variant='h7'>click search</Typography>}
+        {loading ? (
+          <h1>loading</h1>
+        ) : (
+          <>
+            {recipes.matchingRecipes.length > 0 && (
+              <>
+                <Typography variant='h6'>Matching Recipes</Typography>
+                <RecipeList recipes={recipes.matchingRecipes} />
+              </>
+            )}
+            {recipes.partialRecipes > 0 && (
+              <>
+                <Typography variant='h6'>Partially Matching Recipes</Typography>
+                <RecipeList recipes={recipes.partialRecipes} />
+              </>
+            )}
+          </>
+        )}
       </main>
     </div>
   );
