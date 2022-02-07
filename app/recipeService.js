@@ -12,6 +12,7 @@ module.exports = class RecipeService {
 
   async getAllRecipes() {
     const response = await this.recipeSource.getAllRecipes();
+    console.log({ response });
     return response;
   }
 

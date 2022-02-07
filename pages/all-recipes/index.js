@@ -21,6 +21,7 @@ export async function getStaticProps() {
     method: 'GET',
   });
   const data = await res.json();
+  console.log(data);
 
   if (!data) {
     return { notfound: true };

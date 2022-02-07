@@ -30,9 +30,7 @@ export default function Home({ user }) {
 
       <main className={styles.main}>
         <Typography variant='h3'>Reciplease</Typography>
-        {/* <Typography variant='h7'>Your ingredients:</Typography> */}
-        {/* combobox */}
-        {/* <SearchBar /> */}
+        <SearchBar ingredients={user.pantry.ingredients} />
         <Button onClick={handleSearch} variant='outlined'>
           Search
         </Button>

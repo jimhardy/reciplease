@@ -9,7 +9,6 @@ module.exports = class RecipeSource {
     this.client = dbClient;
     this.ingredientsService = ingredientsService;
   }
-  initializeRecipes() {}
 
   async getAllRecipes() {
     try {
@@ -52,9 +51,10 @@ module.exports = class RecipeSource {
           )
         )
       );
+      console.log('here', recipes.data);
       return Promise.all(recipes.data.map(async (recipe) => new Recipe(recipe)));
     } catch (error) {
-      console.log(error);
+      console.log('error in getAllRecipes', error);
     }
   }
 
@@ -83,6 +83,7 @@ module.exports = class RecipeSource {
     const matchingRecipes = [];
     const partialRecipes = [];
     const recipes = await this.getAllRecipes();
+    console.log({ recipes });
     await Promise.all(
       recipes.map((recipe) => {
         const missingIngredients = [];

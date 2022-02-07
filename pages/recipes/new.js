@@ -18,6 +18,8 @@ export default function Recipes() {
 
   const [ingredients, setIngredients] = useState([new Ingredient({})]);
 
+  const [error, setError] = useState(null);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -25,9 +27,12 @@ export default function Recipes() {
         ...recipe,
         ingredients,
       };
+      console.log('submitting', submitRecipe);
       if (!Object.values(submitRecipe).every((value) => value.length > 0)) {
         e.preventDefault();
-        console.log('fields can not be blank');
+        setError('fields can not be blank');
+        console.log(error);
+        return;
       }
       const response = await fetch('/api/add-recipe', {
         method: 'POST',
@@ -36,6 +41,7 @@ export default function Recipes() {
           'Content-Type': 'application/json',
         },
       });
+      console.log('success');
       return response.json();
     } catch (error) {
       console.log('error submitting recipe');
