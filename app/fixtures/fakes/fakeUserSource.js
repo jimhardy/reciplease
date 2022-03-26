@@ -11,13 +11,13 @@ module.exports = class UserSource {
   }
 
   initializeUsers() {
-    userStore.users.forEach((user) => this.withUser(user.id, user.ingredients));
+    userStore.users.forEach((user) => this.withUser({ id: user.id, name: user.name }, user.ingredients));
     console.log('userSource initialized');
   }
 
   async getUser(id) {
     try {
-      const user = await this.userSource.find((user) => user.id === id);
+      const user = this.userSource.find((user) => user.id === id);
       if (user) {
         return Promise.resolve(user);
       } else {
@@ -29,9 +29,9 @@ module.exports = class UserSource {
   }
 
   addUser() {
-    const newId = uuidv4();
-    this.userSource.push(new User(newId));
-    return this.getUser(newId);
+    const user = new User({ id: uuidv4() });
+    this.userSource.push(user);
+    return user;
   }
 
   withUser(user, ingredients) {

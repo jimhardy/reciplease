@@ -28,34 +28,35 @@ module.exports = class RecipeSource {
   }
 
   getRecipeByIngredients(pantry) {
-    const matchingRecipes = [];
-    const partialRecipes = [];
+    const matches = this.recipes.reduce(
+      (acc, recipe) => {
+        const missingIngredients = [];
+        recipe.ingredientsSource.ingredients.forEach((ingredient) => {
+          if (
+            !pantry.ingredients.find(
+              (pantryIngredient) =>
+                pantryIngredient.name === ingredient.name &&
+                pantryIngredient.measure === ingredient.measure &&
+                pantryIngredient.amount >= ingredient.amount
+            )
+          ) {
+            missingIngredients.push(ingredient);
+          }
+        });
 
-    this.recipes.forEach((recipe) => {
-      const missingIngredients = [];
-      recipe.ingredientsSource.ingredients.forEach((ingredient) => {
-        if (
-          !pantry.ingredients.find(
-            (pantryIngredient) =>
-              pantryIngredient.name === ingredient.name &&
-              pantryIngredient.measure === ingredient.measure &&
-              pantryIngredient.amount >= ingredient.amount
-          )
-        ) {
-          missingIngredients.push(ingredient);
+        const score =
+          (recipe.ingredientsSource.ingredients.length - missingIngredients.length) /
+          recipe.ingredientsSource.ingredients.length;
+
+        if (score === 1) {
+          acc.matchingRecipes.push(recipe);
+        } else if (score > 0) {
+          acc.partialRecipes.push({ recipe, missingIngredients });
         }
-      });
-
-      const score =
-        (recipe.ingredientsSource.ingredients.length - missingIngredients.length) /
-        recipe.ingredientsSource.ingredients.length;
-
-      if (score === 1) {
-        matchingRecipes.push(recipe);
-      } else if (score > 0) {
-        partialRecipes.push({ recipe, missingIngredients });
-      }
-    });
-    return { matchingRecipes, partialRecipes };
+        return acc;
+      },
+      { matchingRecipes: [], partialRecipes: [] }
+    );
+    return matches;
   }
 };

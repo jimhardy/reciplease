@@ -13,7 +13,7 @@ const userSource = new UserSource();
 const userService = new UserService(userSource);
 
 before(() => {
-  const user = new User('user-uuid1234');
+  const user = new User({ id: 'user-uuid1234' });
   user.addIngredient({
     id: uuidv4(),
     name: 'salt',
@@ -67,13 +67,14 @@ describe('Recipes Service', () => {
 
   it('should find matching recipes', async () => {
     const user = await userService.getUser('user-uuid1234');
-    const foundRecipes = recipeService.getRecipeByIngredients(user.pantry);
+    const foundRecipes = await recipeService.getRecipeByIngredients(user.pantry);
     expect(foundRecipes.matchingRecipes).to.have.lengthOf(1);
   });
 
   it('should find partially matching recipes', async () => {
     const user = await userService.getUser('user-uuid1234');
-    const foundRecipes = recipeService.getRecipeByIngredients(user.pantry);
+    const foundRecipes = await recipeService.getRecipeByIngredients(user.pantry);
+    console.log({ foundRecipes });
     expect(foundRecipes.partialRecipes).to.have.lengthOf(2);
     expect(foundRecipes.partialRecipes[0]).to.haveOwnPropertyDescriptor('missingIngredients');
     expect(foundRecipes.partialRecipes[0].missingIngredients).to.have.lengthOf(1);

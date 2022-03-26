@@ -8,7 +8,7 @@ const userSource = new UserSource();
 const userService = new UserService(userSource);
 
 before(() => {
-  const user = new User('user-uuid2345');
+  const user = new User({ id: 'user-uuid2345' });
   user.addIngredient({
     id: 'uuid1',
     name: 'salt',
@@ -72,8 +72,8 @@ describe('Users Source', () => {
       expect(ingredients).to.have.lengthOf(3);
     });
 
-    it('should amend the quantity of an ingredient', () => {
-      const user = userService.getUser('user-uuid2345');
+    it('should amend the quantity of an ingredient', async () => {
+      const user = await userService.getUser('user-uuid2345');
       user.amendIngredient(
         {
           id: 'uuid1',
@@ -88,7 +88,7 @@ describe('Users Source', () => {
     });
 
     it('should remove the ingredient if it is all used up', async () => {
-      const user = userService.getUser('user-uuid2345');
+      const user = await userService.getUser('user-uuid2345');
       await user.amendIngredient(
         {
           id: 'uuid2',

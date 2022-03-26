@@ -51,7 +51,6 @@ module.exports = class RecipeSource {
           )
         )
       );
-      console.log('here', recipes.data);
       return Promise.all(recipes.data.map(async (recipe) => new Recipe(recipe)));
     } catch (error) {
       console.log('error in getAllRecipes', error);
@@ -80,12 +79,10 @@ module.exports = class RecipeSource {
   }
 
   async getRecipeByIngredients(pantry) {
-    const matchingRecipes = [];
-    const partialRecipes = [];
     const recipes = await this.getAllRecipes();
     console.log({ recipes });
-    await Promise.all(
-      recipes.map((recipe) => {
+    const matches = recipes.reduce(
+      (acc, recipe) => {
         const missingIngredients = [];
         recipe.ingredientsSource.ingredients.forEach((ingredient) => {
           if (
@@ -105,12 +102,14 @@ module.exports = class RecipeSource {
           recipe.ingredientsSource.ingredients.length;
 
         if (score === 1) {
-          matchingRecipes.push(recipe);
+          acc.matchingRecipes.push(recipe);
         } else if (score > 0) {
-          partialRecipes.push({ recipe, missingIngredients });
+          acc.partialRecipes.push({ recipe, missingIngredients });
         }
-      })
+        return acc;
+      },
+      { matchingRecipes: [], partialRecipes: [] }
     );
-    return { matchingRecipes, partialRecipes };
+    return matches;
   }
 };
